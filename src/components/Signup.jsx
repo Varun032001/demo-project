@@ -1,9 +1,7 @@
-import React, { useState, } from 'react';
-import Input from './Input';
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { userNameValidation, emailValidation, passwordValidation, confirmPasswordValidation, phoneValidation } from "./Validation";
-// import axios from 'axios';
  
 const Signup = () => {
     const navigate = useNavigate();
@@ -17,25 +15,6 @@ const Signup = () => {
     });
     const [errors, setErrors] = useState({});
  
-    // useEffect(() => {
-    //     axios.get('/personsDetails')
-    //         .then(response => {
-    //             console.log(response.data);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching data:', error);
-    //         });
-    // }, [])
- 
-    const onField = [
-        { id: "email", title: "Email", type: "text", placeholder: "Enter email" },
-        { id: "username", title: "Username", type: "text", placeholder: "Enter username" },
-        { id: "name", title: "Name", type: "text", placeholder: "Enter name" },
-        { id: "password", title: "Password", type: "password", placeholder: "Enter password" },
-        { id: "confirmPassword", title: "Confirm Password", type: "password", placeholder: "Confirm password" },
-        { id: "phone", title: "Phone", type: "tel", placeholder: "Enter phone number" }
-    ];
- 
     const handleChange = (e) => {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value });
@@ -45,59 +24,63 @@ const Signup = () => {
     const validateForm = () => {
         let errorsCopy = {};
  
-        const usernameCheck = userNameValidation(formData.username);
-        if (!usernameCheck.isValid) errorsCopy.username = usernameCheck.message;
- 
-        const emailCheck = emailValidation(formData.email);
-        if (!emailCheck.isValid) errorsCopy.email = emailCheck.message;
- 
-        const passwordCheck = passwordValidation(formData.password);
-        if (!passwordCheck.isValid) errorsCopy.password = passwordCheck.message;
- 
-        const confirmPasswordCheck = confirmPasswordValidation(formData.confirmPassword, formData.password);
-        if (!confirmPasswordCheck.isValid) errorsCopy.confirmPassword = confirmPasswordCheck.message;
- 
-        const phoneCheck = phoneValidation(formData.phone);
-        if (!phoneCheck.isValid) errorsCopy.phone = phoneCheck.message;
+        if (!formData.username) errorsCopy.username = "Username is required";
+        if (!formData.email) errorsCopy.email = "Email is required";
+        if (!formData.password) errorsCopy.password = "Password is required";
+        if (formData.password !== formData.confirmPassword) errorsCopy.confirmPassword = "Passwords do not match";
+        if (!formData.phone) errorsCopy.phone = "Phone number is required";
  
         setErrors(errorsCopy);
         return Object.keys(errorsCopy).length === 0;
     };
  
-    const onSignup = () => {
+    const onSignup = async () => {
         if (!validateForm()) return;
  
-        alert("Signup successful! Please log in.");
-        navigate("/login");
+        try {
+            const response = await axios.post('http://localhost:5000/signup', formData);
+            alert(response.data.message);
+            navigate("/login"); // Redirect to login page after successful signup
+        } catch (error) {
+            setErrors({ apiError: error.response.data.message });
+        }
     };
  
     return (
-        <div className="container mt-5">
-            <h2>Signup</h2>
+        <div className="d-flex justify-content-center align-items-center vh-100">
+            <div className="card p-4 shadow-lg" style={{ width: "350px" }}>
+                <h3 className="text-center">Signup</h3>
+                <form>
+                {['username', 'email', 'name', 'password', 'confirmPassword', 'phone'].map((field) => (
+                        <div className="mb-2" key={field}>
+                            <input
+                                id={field}
+                                type={field.includes('password') ? 'password' : 'text'}
+                                className={`form-control ${errors[field] ? 'is-invalid' : ''}`}
+                                placeholder={`Enter ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+                                value={formData[field]}
+                                onChange={handleChange}
+                            />
+                            {errors[field] && <div className="invalid-feedback">{errors[field]}</div>}
+                        </div>
+                    ))}
  
-            {onField.map(({ type, placeholder, id, title }) => (
-                <Input
-                    key={id}
-                    id={id}
-                    title={title}
-                    type={type}
-                    placeholder={placeholder}
-                    value={formData[id]}
-                    onChange={handleChange}
-                    error={errors[id]}
-                />
-               
-            ))}
+                    <button type="button" className="btn btn-primary w-100" onClick={onSignup}>
+                        Signup
+                    </button>
+                </form>
  
-            <button className='btn btn-primary mt-3' onClick={onSignup}>Signup</button>
-            <p className="mt-2">
-                Already have an account?{" "}
-                <button className="btn btn-link p-0" onClick={() => navigate("/login")}>Login</button>
-            </p>
+                {errors.apiError && <p className="text-danger text-center small mt-2">{errors.apiError}</p>}
+ 
+                <p className="text-center mt-2 small">
+                    Already have an account?{" "}
+                    <button className="btn btn-link p-0 small" onClick={() => navigate("/login")}>
+                        Login
+                    </button>
+                </p>
+            </div>
         </div>
     );
 };
  
 export default Signup;
- 
- 
