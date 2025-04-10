@@ -1,3 +1,4 @@
+
 // import React, { useState } from "react";
 // import Table from "react-bootstrap/Table";
 // import Button from "react-bootstrap/Button";
@@ -233,7 +234,7 @@ const Departments = () => {
 
     const fetchDepartments = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/departments", {
+            const response = await axios.get("http://localhost:5000/api/departmentdetails", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setDepartments(response.data);
@@ -447,10 +448,3 @@ const Departments = () => {
 };
 
 export default Departments;
-
-
-
-
-
-
-
