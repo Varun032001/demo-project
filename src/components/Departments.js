@@ -269,7 +269,7 @@ const Departments = () => {
     const handleDeleteSelected = async () => {
         try {
             await axios.post(
-                "http://localhost:5000/api/departments/delete-multiple",
+                "http://localhost:5000/api/departmentdetails/delete-multiple",
                 { departmentIDs: selectedDepartments },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -282,7 +282,7 @@ const Departments = () => {
 
     const handleDeleteSingle = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/departments/${id}`, {
+            await axios.delete(`http://localhost:5000/api/departmentdetails/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             fetchDepartments();
@@ -294,7 +294,7 @@ const Departments = () => {
     const handleSaveEdit = async () => {
         try {
             await axios.put(
-                `http://localhost:5000/api/departments/${editDepartmentID}`,
+                `http://localhost:5000/api/departmentdetails/${editDepartmentID}`,
                 { departmentName: editDepartmentName.trim() },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -309,7 +309,7 @@ const Departments = () => {
         if (!newDepartmentName.trim()) return;
         try {
             await axios.post(
-                "http://localhost:5000/api/departments",
+                "http://localhost:5000/api/departmentdetails",
                 { departmentName: newDepartmentName.trim() },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -447,4 +447,10 @@ const Departments = () => {
 };
 
 export default Departments;
+
+
+
+
+
+
 
