@@ -663,54 +663,7 @@ app.post("/api/departmentdetails/delete-multiple", authenticateToken, (req, res)
     });
 });
 
-// // 👤 Get Current User
-// app.get("/api/user/me", verifyToken, (req, res) => {
-//     db.query(
-//         "SELECT id, name, username, email, phone, roleName, department FROM signindetails WHERE id = ?",
-//         [req.user.id],
-//         (err, results) => {
-//             if (err) return res.status(500).json({ message: "Database error" });
-//             if (results.length === 0) return res.status(404).json({ message: "User not found" });
-//             return res.status(200).json({ message: "User details retrieved successfully", data: results[0] });
-//         }
-//     );
-// });
 
-// // 📋 Get All Users (Admin)
-// app.get("/api/signindetails", verifyToken, (req, res) => {
-//     db.query("SELECT id, name, username, email, phone, roleName, department FROM signindetails", (err, results) => {
-//         if (err) return res.status(500).json({ message: "Database error" });
-//         return res.status(200).json({ message: "User list retrieved successfully", data: results });
-//     });
-// });
-
-// // 🧑‍💼 Get Assigned Users Only
-// app.get("/api/signindetails/assigned", (req, res) => {
-//     db.query("SELECT id, name, email, roleName, department FROM signindetails WHERE roleName IS NOT NULL AND department IS NOT NULL", (err, results) => {
-//         if (err) return res.status(500).json({ message: "Error fetching employees" });
-//         return res.status(200).json({ message: "Assigned employees fetched", data: results });
-//     });
-// });
-
-// // 📝 Assign Role & Department to User
-// app.put("/api/signindetails/:id", (req, res) => {
-//     const { roleName, department } = req.body;
-//     const { id } = req.params;
-
-//     if (!roleName || !department) {
-//         return res.status(400).json({ message: "Role and department are required" });
-//     }
-
-//     db.query("UPDATE signindetails SET roleName = ?, department = ? WHERE id = ?", [roleName, department, id], (err) => {
-//         if (err) return res.status(500).json({ message: "Error updating role assignment" });
-//         return res.status(200).json({ message: "Role assigned successfully" });
-//     });
-// });
-
-// // 404 fallback
-// app.use((req, res) => {
-//     res.status(404).json({ message: "Not found" });
-// });
 
 
 app.get("/api/signindetails", verifyToken, (req, res) => {

@@ -2,7 +2,18 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
- 
+import image from '../image/Signin.jpg';
+
+const divStyle = {
+    width: "100vw",
+    height: "100vh",
+    backgroundImage: `url(${image})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+};
 const Signup = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -47,6 +58,7 @@ const Signup = () => {
     };
  
     return (
+        <div style={divStyle}>
         <div className="d-flex justify-content-center align-items-center vh-100">
             <div className="card p-4 shadow-lg" style={{ width: "350px" }}>
                 <h3 className="text-center">Signup</h3>
@@ -79,6 +91,7 @@ const Signup = () => {
                     </button>
                 </p>
             </div>
+        </div>
         </div>
     );
 };

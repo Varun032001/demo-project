@@ -435,6 +435,132 @@
 
 
 
+// import React, { useState, useEffect, useCallback } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import axios from 'axios';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import Sidebar from './SideBar';
+// import Admin from './Admin';
+// import Departments from './Departments';
+// import RoleAssign from './RoleAssign';
+// import image from '../image/HomePage.jpg';
+// //import Principal from './Principal';
+// import { FaSignOutAlt, FaUser } from 'react-icons/fa';
+
+// const divStyle = {
+//     width: "100vw",
+//     height: "100vh",
+//     backgroundImage: `url(${image})`,
+//     backgroundSize: "cover",
+//     backgroundPosition: "center",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center",
+// };
+// const Home = () => {
+//     const navigate = useNavigate();
+//     const [showProfile, setShowProfile] = useState(false);
+//     const [user, setUser] = useState(null);
+//     const [sessionTimer, setSessionTimer] = useState(null);
+//     const [activeSection, setActiveSection] = useState('home');
+
+//     const logoutUser = useCallback(async () => {
+//         try {
+//             await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
+//         } catch (error) {
+//             console.error("Logout failed", error);
+//         }
+//         localStorage.removeItem("token");
+//         localStorage.removeItem("user");
+//         navigate("/login");
+//     }, [navigate]);
+
+//     const startSessionTimer = useCallback(() => {
+//         if (sessionTimer) clearTimeout(sessionTimer);
+
+//         const timer = setTimeout(() => {
+//             alert("Session expired. Please login again.");
+//             logoutUser();
+//         }, 2 * 60 * 1000);
+
+//         setSessionTimer(timer);
+//     }, []);
+
+//     useEffect(() => {
+//         const fetchUserData = async () => {
+//             try {
+//                 const response = await axios.get("http://localhost:5000/profile", { withCredentials: true });
+//                 if (response.data.success) {
+//                     setUser(response.data.user);
+//                     startSessionTimer();
+//                 } else {
+//                     logoutUser();
+//                 }
+//             } catch (error) {
+//                 logoutUser();
+//             }
+//         };
+
+//         fetchUserData();
+//     }, [logoutUser, startSessionTimer]);
+
+//     useEffect(() => {
+//         return () => clearTimeout(sessionTimer);
+//     }, [sessionTimer]);
+
+//     return (
+//         <div style = {divStyle}> 
+//         <div className="d-flex flex-column" style={{ height: '100vh' }}>
+//             {/* Header Section */}
+//             <header className="d-flex justify-content-between align-items-center bg-dark text-white p-3">
+//                 <div className="flex-grow-1 d-flex justify-content-center">
+//                     <h3 className="m-0">College</h3>
+//                 </div>
+//                 {user && (
+//                     <div className="d-flex align-items-center">
+//                         <button className="btn btn-light me-3" onClick={() => setShowProfile(!showProfile)}>
+//                             <FaUser className="me-2" /> Profile
+//                         </button>
+//                         <button className="btn btn-danger" onClick={logoutUser}>
+//                             <FaSignOutAlt className="me-2" /> Logout
+//                         </button>
+//                     </div>
+//                 )}
+//             </header>
+
+//             <div className="d-flex flex-grow-1">
+//                 <Sidebar setActiveSection={setActiveSection} />
+//                 <div className="container-fluid mt-4 d-flex flex-column" style={{ flex: 1 }}>
+//                     {/* Dynamic Content Based on Active Section */}
+//                     {activeSection === 'home' && <h2>Welcome, {user?.username}!</h2>}
+//                     {activeSection === 'about-us' && <h2>About Us Section</h2>}
+//                     {activeSection === 'admin' && <Admin />}
+//                     {activeSection === 'departments' && <Departments/>}
+//                     {activeSection === 'roleassign' && <RoleAssign/>}
+//                     {/* {activeSection === 'principal' && <Principal />}
+//                     {activeSection === 'student' && <h2>Student Section</h2>} */}
+
+//                     {/* Profile Card */}
+//                     {showProfile && user && (
+//                         <div className="card p-3 mt-3" style={{ maxWidth: '400px', marginLeft: 'auto' }}>
+//                             <h5 className="card-title">Profile Information</h5>
+//                             <p><strong>Username:</strong> {user.username}</p>
+//                             <p><strong>Email:</strong> {user.email}</p>
+//                             <p><strong>Phone:</strong> {user.phone}</p>
+//                         </div>
+//                     )}
+//                 </div>
+//             </div>
+//         </div>
+//         </div>
+//     );
+// };
+
+// export default Home;
+
+
+
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -443,11 +569,9 @@ import Sidebar from './SideBar';
 import Admin from './Admin';
 import Departments from './Departments';
 import RoleAssign from './RoleAssign';
-
-
-//import Principal from './Principal';
+import image from '../image/HomePage.jpg';
+// import Principal from './Principal';
 import { FaSignOutAlt, FaUser } from 'react-icons/fa';
-
 
 const Home = () => {
     const navigate = useNavigate();
@@ -476,7 +600,7 @@ const Home = () => {
         }, 2 * 60 * 1000);
 
         setSessionTimer(timer);
-    }, []);
+    }, [logoutUser, sessionTimer]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -500,9 +624,27 @@ const Home = () => {
         return () => clearTimeout(sessionTimer);
     }, [sessionTimer]);
 
+    // Determine main content styles
+    const contentStyle = {
+        flex: 1,
+        overflowY: 'auto',
+        padding: '20px',
+        borderRadius: '8px',
+        ...(activeSection === 'home'
+            ? {
+                  backgroundImage: `url(${image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+              }
+            : {
+                  backgroundColor: '#f8f9fa',
+              }),
+    };
+
     return (
         <div className="d-flex flex-column" style={{ height: '100vh' }}>
-            {/* Header Section */}
+            {/* Header */}
             <header className="d-flex justify-content-between align-items-center bg-dark text-white p-3">
                 <div className="flex-grow-1 d-flex justify-content-center">
                     <h3 className="m-0">College</h3>
@@ -521,17 +663,18 @@ const Home = () => {
 
             <div className="d-flex flex-grow-1">
                 <Sidebar setActiveSection={setActiveSection} />
-                <div className="container-fluid mt-4 d-flex flex-column" style={{ flex: 1 }}>
-                    {/* Dynamic Content Based on Active Section */}
+
+                {/* Main Content */}
+                <div className="container-fluid mt-4 d-flex flex-column" style={contentStyle}>
                     {activeSection === 'home' && <h2>Welcome, {user?.username}!</h2>}
                     {activeSection === 'about-us' && <h2>About Us Section</h2>}
                     {activeSection === 'admin' && <Admin />}
-                    {activeSection === 'departments' && <Departments/>}
-                    {activeSection === 'roleassign' && <RoleAssign/>}
-                    {/* {activeSection === 'principal' && <Principal />}
-                    {activeSection === 'student' && <h2>Student Section</h2>} */}
+                    {activeSection === 'departments' && <Departments />}
+                    {activeSection === 'roleassign' && <RoleAssign />}
+                    {/* {activeSection === 'principal' && <Principal />} */}
+                    {/* {activeSection === 'student' && <h2>Student Section</h2>} */}
 
-                    {/* Profile Card */}
+                    {/* Profile Info */}
                     {showProfile && user && (
                         <div className="card p-3 mt-3" style={{ maxWidth: '400px', marginLeft: 'auto' }}>
                             <h5 className="card-title">Profile Information</h5>
@@ -547,3 +690,4 @@ const Home = () => {
 };
 
 export default Home;
+
